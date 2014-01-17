@@ -16,7 +16,7 @@ deploy_branch  = "gh-pages"
 
 ## -- Misc Configs -- ##
 
-public_dir      = "public"    # compiled site directory
+public_dir      = "public/code-patterns"    # compiled site directory
 source_dir      = "source"    # source file directory
 blog_index_dir  = 'source'    # directory for your blog's index page (if you put your index in source/blog/index.html, set this to 'source/blog')
 deploy_dir      = "_deploy"   # deploy directory (for Github pages deployment)
@@ -251,8 +251,9 @@ multitask :push do
   cd "#{deploy_dir}" do 
     system "git fetch origin"
     system "git pull origin #{deploy_branch}"
+    (Dir["*"]).each { |f| rm_rf(f) unless ['visio', 'doxygen', 'dotcover', 'pickles', 'ndepend'].include? f }
   end
-  (Dir["#{deploy_dir}/*"]).each { |f| rm_rf(f) }
+  
   Rake::Task[:copydot].invoke(public_dir, deploy_dir)
   puts "\n## Copying #{public_dir} to #{deploy_dir}"
   cp_r "#{public_dir}/.", deploy_dir
